@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Mektup 🎀</title>
+    <style>
+        body {
+            background-color: #fff0f5;
+            margin: 0;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        .heart {
+            position: absolute;
+            font-size: 20px;
+            animation: float 4s linear forwards;
+            opacity: 0;
+        }
+
+        .container {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .ios-alert {
+            background: white;
+            padding: 15px 25px;
+            border-radius: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            font-family: -apple-system, sans-serif;
+            font-size: 18px;
+            border: 1px solid #eee;
+        }
+
+        .gift-image {
+            max-width: 250px;
+            width: 80%;
+            height: auto;
+            margin: 15px;
+            animation: popIn 0.5s ease-out;
+        }
+
+        .mektup {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            max-width: 500px;
+            width: 90%;
+            animation: slideUp 1s ease-out;
+            font-family: 'Courier New', monospace;
+            line-height: 1.6;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(100vh) scale(0); opacity: 1; }
+            100% { transform: translateY(-100vh) scale(1.5); opacity: 0; }
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0); }
+            90% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes slideUp {
+            0% { transform: translateY(100vh); }
+            100% { transform: translateY(0); }
+        }
+
+        @media (max-width: 480px) {
+            .ios-alert { font-size: 16px; }
+            .mektup { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Kalp animasyonları için -->
+    <div id="hearts-container"></div>
+
+    <!-- Hediyeler ve mektup -->
+    <div class="container" id="section1">
+        <div class="ios-alert">Mustodan Sütburger geldi 🥰</div>
+        <img src="https://www.etiinternational.com/images/products/eti-sut-burger-with-strawberry_473_psb.png" 
+             alt="Sütburger" 
+             class="gift-image">
+    </div>
+
+    <div class="container" id="section2">
+        <div class="ios-alert">Tebrikler Musto size kedi hediye ediyooo 🥰🥰</div>
+        <img src="https://img1.picmix.com/output/stamp/normal/8/5/3/4/1694358_42bea.gif" 
+             alt="Kedi" 
+             class="gift-image">
+        <audio id="cat-sound" src="https://actions.google.com/sounds/v1/animals/cat_purr_close.ogg"></audio>
+    </div>
+
+    <div class="container" id="section3">
+        <div class="mektup" id="mektup-icerik">
+            <!-- Mektup içeriği JS ile yüklenecek -->
+        </div>
+    </div>
+
+    <script>
+        // Kalp animasyonu
+        function createHearts() {
+            setInterval(() => {
+                const heart = document.createElement('div');
+                heart.className = 'heart';
+                heart.innerHTML = '💖';
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                document.getElementById('hearts-container').appendChild(heart);
+                setTimeout(() => heart.remove(), 4000);
+            }, 300);
+        }
+
+        // Mektup içeriğini yükle
+        async function loadMektup() {
+            try {
+                const response = await fetch('mektupicerik.txt');
+                const text = await response.text();
+                document.getElementById('mektup-icerik').innerHTML = text.replace(/\n/g, '<br>');
+            } catch (error) {
+                document.getElementById('mektup-icerik').innerHTML = 'Mektup yüklenemedi 😢';
+            }
+        }
+
+        // Sayfa yüklendiğinde
+        window.onload = function() {
+            createHearts();
+            const sections = document.querySelectorAll('.container');
+            sections[0].style.display = 'flex';
+            
+            setTimeout(() => {
+                sections[0].style.display = 'none';
+                sections[1].style.display = 'flex';
+                document.getElementById('cat-sound').play();
+            }, 5000);
+
+            setTimeout(() => {
+                sections[1].style.display = 'none';
+                sections[2].style.display = 'flex';
+                loadMektup();
+            }, 10000);
+        };
+    </script>
+</body>
+</html>
